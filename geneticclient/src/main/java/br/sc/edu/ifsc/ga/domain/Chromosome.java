@@ -19,7 +19,7 @@ public class Chromosome implements Serializable, Remote {
 
 	public Chromosome() {
 		// FIXME valor 8000 apenas para teste
-		avaliation = 8000;
+		avaliation = 4000;
 
 	}
 

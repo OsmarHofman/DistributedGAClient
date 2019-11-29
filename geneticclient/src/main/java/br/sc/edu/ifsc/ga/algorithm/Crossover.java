@@ -13,7 +13,6 @@ public class Crossover {
 	private static Random random = new Random();
 
 	private static Chromosome[] tinder(Chromosome parent1, Chromosome parent2) {
-		System.out.println("Pai 1:" + parent1.toString() + "\nPai 2:" + parent2.toString() + "\n");
 		int parentSize = parent1.getClassrooms().length;
 		Chromosome child1 = new Chromosome();
 		Chromosome child2 = new Chromosome();

@@ -22,19 +22,28 @@ public class ConnectionFactory {
 	public void conectar(final String caminho, final DTOServerData serverData, final int serverId) {
 		result = new ArrayList<>();
 		fila++;
+
 		new Thread() {
 			@Override
 			public void run() {
 				try {
 					IRating rate = (IRating) Naming.lookup(caminho);
-					result.addAll(rate.rate(serverData));
+
 					if (serverId == 1) {
+						DTOServerData dataPart1 = splitChromosomes(serverData, 0, 25);
+						result.addAll(rate.rate(dataPart1));
 						respA = result;
 					} else if (serverId == 2) {
+						DTOServerData dataPart2 = splitChromosomes(serverData, 25, 50);
+						result.addAll(rate.rate(dataPart2));
 						respB = result;
 					} else if (serverId == 3) {
+						DTOServerData dataPart3 = splitChromosomes(serverData, 50, 75);
+						result.addAll(rate.rate(dataPart3));
 						respC = result;
 					} else {
+						DTOServerData dataPart4 = splitChromosomes(serverData, 75, 100);
+						result.addAll(rate.rate(dataPart4));
 						respD = result;
 					}
 					fila--;
@@ -86,5 +95,18 @@ public class ConnectionFactory {
 
 	public void setRespD(List<DTORating> respD) {
 		this.respD = respD;
+	}
+
+	private DTOServerData splitChromosomes(DTOServerData serverData, int comeco, int fim) {
+		DTOServerData newServerData = new DTOServerData();
+		newServerData.setClasses(serverData.getClasses());
+		newServerData.setLessons(serverData.getLessons());
+		newServerData.setSubjects(serverData.getSubjects());
+		newServerData.setTeachers(serverData.getTeachers());
+		for (int i = comeco; i < fim; i++) {
+			newServerData.addChromosome(serverData.getChromosomes().get(i));
+		}
+		return newServerData;
+
 	}
 }

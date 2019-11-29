@@ -2,6 +2,7 @@ package br.sc.edu.ifsc.ga.geneticclient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import br.sc.edu.ifsc.ga.algorithm.Boot;
 import br.sc.edu.ifsc.ga.algorithm.Crossover;
@@ -19,7 +20,7 @@ import br.sc.edu.ifsc.ga.util.RatingHandler;
  *
  */
 public class App {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		int size = 100;
 		RatingHandler[] rh = new RatingHandler[size];
 		List<DTORating> dto = new ArrayList<>();
@@ -31,14 +32,16 @@ public class App {
 		DTORating avaliacao = Chromosome.getBestAvaliation(chromosomes);
 
 		// TODO modificar o ponto de parada para um valor mais apropriado
-		while (avaliacao.getChromosome().getAvaliation() >= 200) {
 
-			System.out.println("Lendo dados do arquivo XML...");
-			DTOServerData serverData = PullData.getAllData(chromosomes);
+		System.out.println("Lendo dados do arquivo XML...");
+		DTOServerData serverData = PullData.getAllData(chromosomes);
+
+		while (avaliacao.getChromosome().getAvaliation() >= 800) {
 
 			System.out.println("Enviando cromossomos para calculo da funÃ§Ã£o de avaliaÃ§Ã£o");
 			ConnectionFactory connection = new ConnectionFactory();
 			System.setSecurityManager(new SecurityManager());
+
 			connection.conectar("rmi://10.151.33.80:1099/Evaluation", serverData, 1);
 			connection.conectar("rmi://10.151.33.112:1099/Evaluation", serverData, 2);
 			connection.conectar("rmi://10.151.33.134:1099/Evaluation", serverData, 3);
@@ -46,6 +49,7 @@ public class App {
 
 			while (connection.getFila() != 0) {
 				System.out.println("Processando...");
+				TimeUnit.SECONDS.sleep(1);
 			}
 
 			dto.addAll(connection.getRespA());
@@ -78,8 +82,8 @@ public class App {
 
 			System.out.println("Avaliando prÃ³xima geraÃ§Ã£o de cromossomos...");
 			avaliacao = Chromosome.getBestAvaliation(nextGeneration);
+			System.out.println(avaliacao.getChromosome().getAvaliation());
 		}
-
-		System.out.println(avaliacao.toString());
+		System.out.println("\n\n\n\n\n\n\nAvaliacao Final: " + avaliacao.getChromosome().getAvaliation());
 	}
 }

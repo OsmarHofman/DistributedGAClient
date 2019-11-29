@@ -2,6 +2,7 @@ package br.sc.edu.ifsc.ga.util;
 
 import java.io.Serializable;
 import java.rmi.Remote;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +25,11 @@ public class DTOServerData implements Serializable, Remote {
 	private List<Teacher> teachers;
 
 	public DTOServerData() {
+		this.chromosomes = new ArrayList<>();
+		this.classes = new ArrayList<>();
+		this.lessons = new ArrayList<>();
+		this.subjects = new ArrayList<>();
+		this.teachers = new ArrayList<>();
 	}
 
 	public DTOServerData(List<Chromosome> chromosomes, List<Classes> classes, List<Lesson> lessons,
@@ -41,6 +47,10 @@ public class DTOServerData implements Serializable, Remote {
 
 	public void setChromosomes(List<Chromosome> chromosomes) {
 		this.chromosomes = chromosomes;
+	}
+
+	public void addChromosome(Chromosome chromosome) {
+		this.chromosomes.add(chromosome);
 	}
 
 	public List<Classes> getClasses() {
