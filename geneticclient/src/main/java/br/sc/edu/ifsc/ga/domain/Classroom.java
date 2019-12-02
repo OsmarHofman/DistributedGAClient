@@ -45,7 +45,7 @@ public class Classroom implements Serializable, Remote {
 
 	@Override
 	public String toString() {
-		return "Classroom{" + "classroomSubjects=" + Arrays.toString(classroomSubjects) + '}';
+		return "\nClassroom\n{" + "classroomSubjects=" + Arrays.toString(classroomSubjects) + "}\n";
 	}
 
 }

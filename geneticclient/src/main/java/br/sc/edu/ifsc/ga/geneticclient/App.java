@@ -25,31 +25,38 @@ public class App {
 		int size = 100;
 		RatingHandler[] rh = new RatingHandler[size];
 		List<DTORating> dto = new ArrayList<>();
-
-		System.out.println("Inicializando populaÃ§Ã£o...");
+		System.out.println("-------------------------------- Inicialização --------------------------------");
+		System.out.println("\nInicializando populaÃ§Ã£o...");
 		Chromosome[] chromosomes = Boot.initialize(size);
 
-		System.out.println("Avaliando primeira geraÃ§Ã£o de cromossomos...");
+		System.out.println("\nAvaliando primeira geraÃ§Ã£o de cromossomos...");
 		DTORating avaliacao = Chromosome.getBestAvaliation(chromosomes);
 
 		// TODO modificar o ponto de parada para um valor mais apropriado
 
-		System.out.println("Lendo dados do arquivo XML...");
+		System.out.println("\nLendo dados do arquivo XML...");
 		DTOServerData serverData = PullData.getAllData(chromosomes);
 
 		int count = 0;
-		
-		while (count < 5000) {
 
-			System.out.println("Enviando cromossomos para calculo da funÃ§Ã£o de avaliaÃ§Ã£o");
+		// TODO Verificar a condição da parada que são: 1000 iterações, e avaliacao
+		// menor que 4000
+		while (count < 10) {
+
+			System.out
+					.println("-------------------------------- Geração " + count + " --------------------------------");
+
+			System.out.println("\nEnviando cromossomos para calculo da funcao de avaliacao");
 			ConnectionFactory connection = new ConnectionFactory();
 			System.setSecurityManager(new SecurityManager());
 
-			/*connection.conectar("rmi://10.151.33.80:1099/Evaluation", serverData, 1);
-			connection.conectar("rmi://10.151.33.112:1099/Evaluation", serverData, 2);
-			connection.conectar("rmi://10.151.33.134:1099/Evaluation", serverData, 3);
-			connection.conectar("rmi://10.151.33.162:1099/Evaluation", serverData, 4);*/
-			
+			/*
+			 * connection.conectar("rmi://10.151.33.80:1099/Evaluation", serverData, 1);
+			 * connection.conectar("rmi://10.151.33.112:1099/Evaluation", serverData, 2);
+			 * connection.conectar("rmi://10.151.33.134:1099/Evaluation", serverData, 3);
+			 * connection.conectar("rmi://10.151.33.162:1099/Evaluation", serverData, 4);
+			 */
+
 			connection.conectar("rmi://10.151.31.135:1099/Evaluation", serverData, 1);
 			connection.conectar("rmi://10.151.31.160:1099/Evaluation", serverData, 2);
 			connection.conectar("rmi://10.151.31.198:1099/Evaluation", serverData, 3);
@@ -64,12 +71,12 @@ public class App {
 			dto.addAll(connection.getRespB());
 			dto.addAll(connection.getRespC());
 			dto.addAll(connection.getRespD());
-			
+
 			for (int i = 0; i < dto.size(); i++) {
 				dto.get(i).setId(i);
 			}
 
-			System.out.println("Calculando FaA...");
+			System.out.println("\nCalculando FaA...");
 			int faA = 0;
 			for (int i = 0; i < rh.length; i++) {
 				faA += dto.get(i).getChromosome().getAvaliation();
@@ -80,35 +87,32 @@ public class App {
 
 			chromosomes = new Chromosome[size];
 			chromosomes = DTORating.getAllChromosomes(dto);
-			
-			System.out.println("Fazendo seleÃ§Ã£o por elitismo...");
+
+			System.out.println("\nFazendo selecao por elitismo...");
 			int percentageChanceOfElitism = 10;
 			int proportion = size / percentageChanceOfElitism;
 			Chromosome[] eliteChromosomes = Selection.elitismSelection(chromosomes, proportion);
-			//System.out.println("\nElite:" + eliteChromosomes[0].getAvaliation());
 
-			System.out.println("Fazendo crossover...");
+			System.out.println("\nFazendo crossover...");
 			int percentageChanceOfCrossover = 60;
 			Chromosome[] crossedChromosomes = Crossover.cross(rh, faA, chromosomes, eliteChromosomes,
 					percentageChanceOfCrossover);
 
-			System.out.println("Fazendo mutaÃ§Ã£o...");
+			System.out.println("\nFazendo mutacao...");
 			int percentageChanceOfMutation = 20;
 			Chromosome[] nextGeneration = Mutation.randomMutation(crossedChromosomes, percentageChanceOfMutation);
 
-			System.out.println("Avaliando prÃ³xima geraÃ§Ã£o de cromossomos...");
-			/*for (int i = 0; i < nextGeneration.length; i++) {
-				System.out.println("\nAvaliação ["+ i+"]: "+ nextGeneration[i].getAvaliation() );
-			}*/
-//			avaliacao = Chromosome.getBestAvaliation(nextGeneration);
+			System.out.println("\nAvaliando proxima geracao de cromossomos...");
+
+			avaliacao = Chromosome.getBestAvaliation(nextGeneration);
 			System.out.println(avaliacao.getChromosome().getAvaliation());
-			
+
 			count++;
-			System.out.println("Contador: " + count);
-			
+
 			serverData.setChromosomes(Arrays.asList(nextGeneration));
-			
+
 		}
 		System.out.println("\n\n\n\n\n\n\nAvaliacao Final: " + avaliacao.getChromosome().getAvaliation());
+		System.out.println("\nCromossomo escolhido:\n" + avaliacao.getChromosome().toString());
 	}
 }

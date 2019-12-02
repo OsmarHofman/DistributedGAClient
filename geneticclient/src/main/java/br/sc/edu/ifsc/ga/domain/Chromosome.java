@@ -22,7 +22,7 @@ public class Chromosome implements Serializable, Remote {
 		this.avaliation = 5000;
 
 	}
-	
+
 	public Chromosome(int avaliation) {
 		this.avaliation = avaliation;
 	}
@@ -107,6 +107,6 @@ public class Chromosome implements Serializable, Remote {
 
 	@Override
 	public String toString() {
-		return "Chromosome{" + "chromosome=" + Arrays.toString(classrooms) + ", avaliation=" + avaliation + '}';
+		return "Chromosome{\n" + "chromosome=" + Arrays.toString(classrooms) + ", \navaliation=" + avaliation + "\n}";
 	}
 }
