@@ -17,10 +17,13 @@ public class ConnectionFactory {
 
 	public ConnectionFactory() {
 		fila = 0;
+		respA = new ArrayList<DTORating>();
+		respB = new ArrayList<DTORating>();
+		respC = new ArrayList<DTORating>();
+		respD = new ArrayList<DTORating>();
 	}
 
-	public void conectar(final String caminho, final DTOServerData serverData, final int serverId) {
-		result = new ArrayList<>();
+	public void conectar(String caminho, DTOServerData serverData, int serverId) {
 		fila++;
 
 		new Thread() {
@@ -28,23 +31,26 @@ public class ConnectionFactory {
 			public void run() {
 				try {
 					IRating rate = (IRating) Naming.lookup(caminho);
-
 					if (serverId == 1) {
 						DTOServerData dataPart1 = splitChromosomes(serverData, 0, 25);
-						result.addAll(rate.rate(dataPart1));
-						respA = result;
+						respA = new ArrayList<DTORating>();
+						respA.addAll(rate.rate(dataPart1));
 					} else if (serverId == 2) {
 						DTOServerData dataPart2 = splitChromosomes(serverData, 25, 50);
-						result.addAll(rate.rate(dataPart2));
-						respB = result;
+						respB = new ArrayList<DTORating>();
+
+						respB.addAll(rate.rate(dataPart2));
+
 					} else if (serverId == 3) {
 						DTOServerData dataPart3 = splitChromosomes(serverData, 50, 75);
-						result.addAll(rate.rate(dataPart3));
-						respC = result;
+						respC = new ArrayList<DTORating>();
+
+						respC.addAll(rate.rate(dataPart3));
 					} else {
 						DTOServerData dataPart4 = splitChromosomes(serverData, 75, 100);
-						result.addAll(rate.rate(dataPart4));
-						respD = result;
+						respD = new ArrayList<DTORating>();
+
+						respD.addAll(rate.rate(dataPart4));
 					}
 					fila--;
 					System.out.println("Tamanho da Fila - Remove: " + fila);

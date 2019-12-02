@@ -10,7 +10,7 @@ import br.sc.edu.ifsc.ga.domain.Chromosome;
 
 public class Selection {
 
-	public static Chromosome[] elitismSelection(final Chromosome[] chromosomes, int proportion) {
+	public static Chromosome[] elitismSelection(Chromosome[] chromosomes, int proportion) {
 		Chromosome[] chosenChromosomes = new Chromosome[proportion];
 		List<Chromosome> eliteChromosomes = new ArrayList<>(Arrays.asList(chromosomes.clone()));
 		Collections.sort(eliteChromosomes, Comparator.comparing(Chromosome::getAvaliation));

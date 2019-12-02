@@ -18,9 +18,13 @@ public class Chromosome implements Serializable, Remote {
 	private int avaliation;
 
 	public Chromosome() {
-		// FIXME valor 8000 apenas para teste
-		avaliation = 4000;
+		// FIXME valor 4000 apenas para teste
+		this.avaliation = 5000;
 
+	}
+	
+	public Chromosome(int avaliation) {
+		this.avaliation = avaliation;
 	}
 
 	public Chromosome generateRandom() {

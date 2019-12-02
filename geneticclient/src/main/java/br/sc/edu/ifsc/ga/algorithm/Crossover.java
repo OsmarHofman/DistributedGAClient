@@ -14,11 +14,11 @@ public class Crossover {
 
 	private static Chromosome[] tinder(Chromosome parent1, Chromosome parent2) {
 		int parentSize = parent1.getClassrooms().length;
-		Chromosome child1 = new Chromosome();
-		Chromosome child2 = new Chromosome();
+		Chromosome child1 = new Chromosome(0);
+		Chromosome child2 = new Chromosome(0);
 
 		int crossPoint = random.nextInt(parentSize + 1);
-		if (parent1.equals(parent2) || crossPoint == 0 || crossPoint == 30) {
+		if (parent1.equals(parent2) || crossPoint == 0 || crossPoint == parentSize) {
 			child1.setParentToChild(child1, parent1);
 			child2.setParentToChild(child2, parent2);
 		} else {
@@ -36,7 +36,7 @@ public class Crossover {
 
 	public static Chromosome[] cross(RatingHandler[] ratingHandler, int faA, Chromosome[] chromosomes,
 			Chromosome[] eliteChromosomes, int percentageChanceOfCrossover) {
-		int size = (chromosomes.length - 4) / 2;
+		int size = (chromosomes.length - eliteChromosomes.length) / 2;
 		List<Chromosome> lChromosomes = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
 			int parentRNG = random.nextInt(faA) + 1;

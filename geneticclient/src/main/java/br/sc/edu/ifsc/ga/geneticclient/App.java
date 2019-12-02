@@ -1,6 +1,7 @@
 package br.sc.edu.ifsc.ga.geneticclient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -36,26 +37,37 @@ public class App {
 		System.out.println("Lendo dados do arquivo XML...");
 		DTOServerData serverData = PullData.getAllData(chromosomes);
 
-		while (avaliacao.getChromosome().getAvaliation() >= 800) {
+		int count = 0;
+		
+		while (count < 5000) {
 
 			System.out.println("Enviando cromossomos para calculo da funÃ§Ã£o de avaliaÃ§Ã£o");
 			ConnectionFactory connection = new ConnectionFactory();
 			System.setSecurityManager(new SecurityManager());
 
-			connection.conectar("rmi://10.151.33.80:1099/Evaluation", serverData, 1);
+			/*connection.conectar("rmi://10.151.33.80:1099/Evaluation", serverData, 1);
 			connection.conectar("rmi://10.151.33.112:1099/Evaluation", serverData, 2);
 			connection.conectar("rmi://10.151.33.134:1099/Evaluation", serverData, 3);
-			connection.conectar("rmi://10.151.33.162:1099/Evaluation", serverData, 4);
+			connection.conectar("rmi://10.151.33.162:1099/Evaluation", serverData, 4);*/
+			
+			connection.conectar("rmi://10.151.31.135:1099/Evaluation", serverData, 1);
+			connection.conectar("rmi://10.151.31.160:1099/Evaluation", serverData, 2);
+			connection.conectar("rmi://10.151.31.198:1099/Evaluation", serverData, 3);
+			connection.conectar("rmi://10.151.31.145:1099/Evaluation", serverData, 4);
 
 			while (connection.getFila() != 0) {
 				System.out.println("Processando...");
 				TimeUnit.SECONDS.sleep(1);
 			}
-
+			dto = new ArrayList<DTORating>();
 			dto.addAll(connection.getRespA());
 			dto.addAll(connection.getRespB());
 			dto.addAll(connection.getRespC());
 			dto.addAll(connection.getRespD());
+			
+			for (int i = 0; i < dto.size(); i++) {
+				dto.get(i).setId(i);
+			}
 
 			System.out.println("Calculando FaA...");
 			int faA = 0;
@@ -66,10 +78,14 @@ public class App {
 				rh[i].setChromosomeId(dto.get(i).getId());
 			}
 
+			chromosomes = new Chromosome[size];
+			chromosomes = DTORating.getAllChromosomes(dto);
+			
 			System.out.println("Fazendo seleÃ§Ã£o por elitismo...");
 			int percentageChanceOfElitism = 10;
 			int proportion = size / percentageChanceOfElitism;
 			Chromosome[] eliteChromosomes = Selection.elitismSelection(chromosomes, proportion);
+			//System.out.println("\nElite:" + eliteChromosomes[0].getAvaliation());
 
 			System.out.println("Fazendo crossover...");
 			int percentageChanceOfCrossover = 60;
@@ -81,8 +97,17 @@ public class App {
 			Chromosome[] nextGeneration = Mutation.randomMutation(crossedChromosomes, percentageChanceOfMutation);
 
 			System.out.println("Avaliando prÃ³xima geraÃ§Ã£o de cromossomos...");
-			avaliacao = Chromosome.getBestAvaliation(nextGeneration);
+			/*for (int i = 0; i < nextGeneration.length; i++) {
+				System.out.println("\nAvaliação ["+ i+"]: "+ nextGeneration[i].getAvaliation() );
+			}*/
+//			avaliacao = Chromosome.getBestAvaliation(nextGeneration);
 			System.out.println(avaliacao.getChromosome().getAvaliation());
+			
+			count++;
+			System.out.println("Contador: " + count);
+			
+			serverData.setChromosomes(Arrays.asList(nextGeneration));
+			
 		}
 		System.out.println("\n\n\n\n\n\n\nAvaliacao Final: " + avaliacao.getChromosome().getAvaliation());
 	}
