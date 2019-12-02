@@ -2,6 +2,7 @@ package br.sc.edu.ifsc.ga.util;
 
 import java.io.Serializable;
 import java.rmi.Remote;
+import java.util.List;
 
 import br.sc.edu.ifsc.ga.domain.Chromosome;
 
@@ -15,6 +16,19 @@ public class DTORating implements Serializable, Remote {
 	private int id;
 
 	public DTORating() {
+	}
+	
+	
+	public DTORating getBestAvaliation(List<DTORating> dtos) {
+		int avaliation = 0;
+		DTORating bestDto = new DTORating();
+		for (DTORating dtoRating : dtos) {
+			if(dtoRating.getChromosome().getAvaliation() > avaliation) {
+				avaliation = dtoRating.getChromosome().getAvaliation();
+				bestDto = dtoRating;
+			}
+		}
+		return bestDto;
 	}
 
 	public DTORating(Chromosome chromosome, int id) {
