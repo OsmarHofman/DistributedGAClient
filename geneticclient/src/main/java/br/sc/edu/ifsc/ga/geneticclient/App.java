@@ -41,7 +41,7 @@ public class App {
 
 		// TODO Verificar a condição da parada que são: 1000 iterações, e avaliacao
 		// menor que 4000
-		while (count < 10) {
+		while ((count < 1000 && avaliacao.getChromosome().getAvaliation() < 3800) || count == 0) {
 
 			System.out
 					.println("-------------------------------- Geração " + count + " --------------------------------");
@@ -60,7 +60,7 @@ public class App {
 			connection.conectar("rmi://10.151.31.135:1099/Evaluation", serverData, 1);
 			connection.conectar("rmi://10.151.31.160:1099/Evaluation", serverData, 2);
 			connection.conectar("rmi://10.151.31.198:1099/Evaluation", serverData, 3);
-			connection.conectar("rmi://10.151.31.145:1099/Evaluation", serverData, 4);
+			connection.conectar("rmi://10.151.31.200:1099/Evaluation", serverData, 4);
 
 			while (connection.getFila() != 0) {
 				System.out.println("Processando...");
